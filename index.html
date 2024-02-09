@@ -6,7 +6,34 @@
     <title>Odin Rock Paper Scissors</title>
   </head>
   <body>
+    <div id="selection-buttons">
+      <button>Rock</button>
+      <button>Paper</button>
+      <button>Scissors</button>
+    </div>
+
+    <div id="results">
+      <p id="score">(Player) 0 : 0 (Computer)</p>
+      <p id="message"></p>
+      <p id="winner"></p>
+    </div>
+
     <script>
+      let playerPoints = 0;
+      let computerPoints = 0;
+
+      const score = document.querySelector("#score");
+      const text = document.querySelector("#message");
+      const winnerText = document.querySelector("#winner");
+      const buttons = document.querySelector("#selection-buttons");
+
+      Array.from(buttons.children).forEach((button) => {
+        button.addEventListener("click", () => {
+          const playerSelection = button.textContent;
+          playRound(playerSelection, getComputerChoice());
+        });
+      });
+
       function getComputerChoice() {
         const options = ["Rock", "Paper", "Scissors"];
         let randomIndex = Math.floor(Math.random() * 3);
@@ -15,36 +42,32 @@
       }
 
       function playRound(playerSelection, computerSelection) {
-        playerSelection =
-          playerSelection[0].toUpperCase() +
-          playerSelection.slice(1).toLowerCase();
-
+        let message;
         if (playerSelection === computerSelection) {
-          return "It's a Draw!";
+          message = "It's a Draw!";
         } else if (
           (playerSelection === "Rock" && computerSelection === "Paper") ||
           (playerSelection === "Paper" && computerSelection === "Scissors") ||
           (playerSelection === "Scissors" && computerSelection === "Rock")
         ) {
-          return `You Lose! ${computerSelection} beats ${playerSelection}`;
+          computerPoints++;
+          message = `You Lose! ${computerSelection} beats ${playerSelection}`;
         } else {
-          return `You Win! ${playerSelection} beats ${computerSelection}`;
+          playerPoints++;
+          message = `You Win! ${playerSelection} beats ${computerSelection}`;
+        }
+
+        score.textContent = `(Player) ${playerPoints} : ${computerPoints} (Computer)`;
+        text.textContent = message;
+
+        if (playerPoints === 5) {
+          winnerText.textContent = "Player wins!";
+          buttons.style.display = "none";
+        } else if (computerPoints === 5) {
+          winnerText.textContent = "Computer wins!";
+          buttons.style.display = "none";
         }
       }
-
-      function playGame() {
-        for (let i = 0; i < 5; i++) {
-          const playerSelection = prompt(
-            `Round ${i + 1}\nYour selection: `,
-            "Paper"
-          );
-          const computerSelection = getComputerChoice();
-
-          console.log(playRound(playerSelection, computerSelection));
-        }
-      }
-
-      playGame();
     </script>
   </body>
 </html>
